@@ -3,6 +3,7 @@ package com.flightapp.common.utils.cache;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -17,15 +18,21 @@ public class CacheEvacuator {
     private static final int MAX_SIZE = 30;
     private List<CacheExpireConfig> monitoredCaches = new LinkedList();
 
+    @PostConstruct
     private void init() {
         Executors.newSingleThreadScheduledExecutor()
                 .scheduleAtFixedRate(() -> {
                     try {
-                        log.debug("Starting ");
+                        if (monitoredCaches.isEmpty()) {
+                            log.debug("No caches to monitor yet..");
+                            return;
+                        }
+                        log.debug("Started entries evacuation process for {} caches", monitoredCaches.size());
                         int poolSize = monitoredCaches.size() > MAX_SIZE ? MAX_SIZE : monitoredCaches.size();
-                        ExecutorService executorService = Executors.newFixedThreadPool(monitoredCaches.size());
+                        ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
                         monitoredCaches.forEach(cache -> executorService.submit(() -> clearExpiredEntries(cache)));
                         executorService.awaitTermination(1, TimeUnit.MINUTES);
+                        log.debug("Done entries evacuation process for {} caches", monitoredCaches.size());
                     } catch (Throwable t) {
                         log.error("Failed to monitor caches", t);
                     }
