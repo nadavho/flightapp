@@ -33,7 +33,7 @@ public class BaggageCheckInService implements BaggageCheckInApi {
         return BaggageCheckInResponse.builder()
                 .destinationId(baggageCheckInRequest.getDestinationId())
                 .baggageId(baggageCheckInRequest.getBaggageId())
-                .checkInSucceeded(true)
+                .checkInSucceeded(false)
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class BaggageCheckInService implements BaggageCheckInApi {
         return BaggageCheckInResponse.builder()
                 .destinationId(baggageDetails.getDestinationId())
                 .baggageId(baggageDetails.getBaggageId())
-                .checkInSucceeded(false)
+                .checkInSucceeded(true)
                 .build();
     }
 
