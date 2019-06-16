@@ -31,6 +31,7 @@ public class CacheEvacuator {
                         int poolSize = monitoredCaches.size() > MAX_SIZE ? MAX_SIZE : monitoredCaches.size();
                         ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
                         monitoredCaches.forEach(cache -> executorService.submit(() -> clearExpiredEntries(cache)));
+                        executorService.shutdown();
                         executorService.awaitTermination(1, TimeUnit.MINUTES);
                         log.debug("Done entries evacuation process for {} caches", monitoredCaches.size());
                     } catch (Throwable t) {
