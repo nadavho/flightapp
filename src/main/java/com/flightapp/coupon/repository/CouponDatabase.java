@@ -34,6 +34,6 @@ public class CouponDatabase {
     }
 
     private double randomDiscountIndex() {
-        return discounts.get((int) (Math.random() * 100) + 1);
+        return discounts.get((int) (Math.random() * discounts.size()));
     }
 }
